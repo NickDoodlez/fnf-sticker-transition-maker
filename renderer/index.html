@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src blob:">
+<title>FNF Sticker Transition Maker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <img src="logo.png" alt="" width="32" height="32">
+    <h1 data-i18n="app.title">FNF Sticker Transition Maker</h1>
+  </div>
+  <div class="top-actions">
+    <div class="lang" id="langSeg" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="es">ES</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+    <button id="btnCredits" class="btn" type="button" data-i18n="btn.credits">Créditos</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="left">
+    <div class="stage" id="stage">
+      <canvas id="view" data-i18n-aria="preview.aria"></canvas>
+      <div class="stage-msg" id="stageMsg" hidden></div>
+    </div>
+    <div class="transport">
+      <button id="btnPlay" class="btn primary" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path id="playIcon" d="M7 4l13 8-13 8z"/></svg>
+        <span id="playLabel" data-i18n="play">Reproducir</span>
+      </button>
+      <button id="btnRestart" class="btn icon" type="button" data-i18n-title="restart">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h3v14H6zM20 5v14L10 12z"/></svg>
+      </button>
+      <input id="timeline" type="range" min="0" max="1000" step="1" value="0" data-i18n-aria="position">
+      <span id="timeLabel" class="time">0.00 / 0.00 s</span>
+      <label class="check"><input type="checkbox" id="loop"><span data-i18n="loop">Repetir</span></label>
+      <button id="btnNew" class="btn" type="button" data-i18n="random">Otra al azar</button>
+    </div>
+  </section>
+
+  <aside class="panel" id="panel">
+    <section class="group">
+      <h2 data-i18n="sec.pack">Sticker pack</h2>
+      <label class="field"><span data-i18n="pack.pack">Pack</span><select id="pack"></select></label>
+      <label class="field"><span data-i18n="pack.set">Conjunto</span><select id="subpack"></select></label>
+      <p class="note" id="packInfo"></p>
+      <div class="row">
+        <button id="btnOpenPacks" class="btn small" type="button" data-i18n="btn.packsFolder">Carpeta de packs</button>
+        <button id="btnOpenSounds" class="btn small" type="button" data-i18n="btn.soundsFolder">Carpeta de sonidos</button>
+        <button id="btnReload" class="btn small" type="button" data-i18n="btn.reload">Recargar</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec.transition">Transición</h2>
+      <div class="seg" id="modeSeg" role="radiogroup" data-i18n-aria="mode.aria">
+        <button type="button" data-mode="full" role="radio" data-i18n="mode.full">Completa</button>
+        <button type="button" data-mode="in" role="radio" data-i18n="mode.in">Solo entrada</button>
+        <button type="button" data-mode="out" role="radio" data-i18n="mode.out">Solo salida</button>
+      </div>
+      <label class="field"><span data-i18n="cover">Duración de entrada y salida</span><input type="range" id="cover" min="0.2" max="3" step="0.05"><output data-for="cover"></output></label>
+      <label class="field"><span data-i18n="hold">Pantalla cubierta</span><input type="range" id="hold" min="0" max="3" step="0.05"><output data-for="hold"></output></label>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec.random">Aleatoriedad</h2>
+      <div class="field">
+        <span data-i18n="seed">Semilla</span>
+        <div class="row tight">
+          <input type="text" id="seed" maxlength="40" spellcheck="false" autocomplete="off">
+          <button id="btnDice" class="btn small" type="button" data-i18n="seed.new" data-i18n-title="seed.newTitle">Nueva</button>
+          <button id="btnCopy" class="btn small" type="button" data-i18n="seed.copy" data-i18n-title="seed.copyTitle">Copiar</button>
+        </div>
+      </div>
+      <label class="field"><span data-i18n="lastMode">Sticker del centro</span>
+        <select id="lastMode"><option value="common" data-i18n="lastMode.common">Los comunes del pack (BF / GF)</option><option value="any" data-i18n="lastMode.any">Cualquiera</option></select>
+      </label>
+      <div class="pair"><span data-i18n="rows">Distancia entre filas</span><input type="number" id="rowMin" min="5" max="400" step="1"><b data-i18n="to">a</b><input type="number" id="rowMax" min="5" max="400" step="1"></div>
+      <div class="pair"><span data-i18n="angle">Ángulo en grados</span><input type="number" id="angleMin" min="-180" max="180" step="1"><b data-i18n="to">a</b><input type="number" id="angleMax" min="-180" max="180" step="1"></div>
+      <div class="pair"><span data-i18n="scale">Tamaño al aparecer</span><input type="number" id="scaleMin" min="0.5" max="1.5" step="0.01"><b data-i18n="to">a</b><input type="number" id="scaleMax" min="0.5" max="1.5" step="0.01"></div>
+      <label class="field"><span data-i18n="stickerScale">Tamaño de los stickers</span><input type="range" id="stickerScale" min="0.3" max="2" step="0.05"><output data-for="stickerScale"></output></label>
+      <label class="field"><span data-i18n="spacing">Separación horizontal</span><input type="range" id="spacing" min="0.2" max="1" step="0.05"><output data-for="spacing"></output></label>
+      <button id="btnResetRandom" class="btn small" type="button" data-i18n="resetRandom">Valores originales del juego</button>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec.sound">Sonido</h2>
+      <label class="check wide"><input type="checkbox" id="soundOn"><span data-i18n="soundOn">Sonido de cada sticker</span></label>
+      <label class="field"><span data-i18n="volume">Volumen</span><input type="range" id="volume" min="0" max="1" step="0.01"><output data-for="volume"></output></label>
+      <label class="field"><span data-i18n="soundGroup">Grupo de sonidos</span><select id="soundGroup"></select></label>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec.bg">Fondo</h2>
+      <label class="field"><span data-i18n="bgType">Tipo</span>
+        <select id="bgType"><option value="transparent" data-i18n="bg.transparent">Transparente</option><option value="color" data-i18n="bg.color">Color sólido</option><option value="image" data-i18n="bg.image">Imagen</option></select>
+      </label>
+      <div class="row">
+        <input type="color" id="bgColor" data-i18n-aria="bg.colorAria">
+        <button id="btnBgImage" class="btn small" type="button" data-i18n="bg.pick">Elegir imagen</button>
+        <span class="note inline" id="bgName"></span>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2 data-i18n="sec.export">Exportar</h2>
+      <label class="field"><span data-i18n="resolution">Resolución</span>
+        <select id="resPreset">
+          <option value="1280x720" data-i18n="res.hd">1280 × 720 (HD)</option>
+          <option value="1920x1080" data-i18n="res.fhd">1920 × 1080 (Full HD)</option>
+          <option value="2560x1440" data-i18n="res.2k">2560 × 1440 (2K)</option>
+          <option value="3840x2160" data-i18n="res.4k">3840 × 2160 (4K)</option>
+          <option value="1080x1920" data-i18n="res.vertical">1080 × 1920 (vertical)</option>
+          <option value="1080x1080" data-i18n="res.square">1080 × 1080 (cuadrado)</option>
+          <option value="custom" data-i18n="res.custom">Personalizada</option>
+        </select>
+      </label>
+      <div class="pair"><span data-i18n="size">Ancho y alto</span><input type="number" id="width" min="64" max="7680" step="2"><b>×</b><input type="number" id="height" min="64" max="4320" step="2"></div>
+      <div class="field">
+        <span data-i18n="fps">FPS</span>
+        <div class="row tight">
+          <input type="number" id="fps" min="1" max="240" step="1">
+          <button class="btn small" type="button" data-fps="24">24</button>
+          <button class="btn small" type="button" data-fps="30">30</button>
+          <button class="btn small" type="button" data-fps="60">60</button>
+        </div>
+      </div>
+      <label class="field"><span data-i18n="format">Formato</span>
+        <select id="format">
+          <option value="webm" data-i18n="fmt.webm">WebM (VP9, con transparencia)</option>
+          <option value="mov" data-i18n="fmt.mov">MOV (ProRes 4444, con transparencia)</option>
+          <option value="mp4" data-i18n="fmt.mp4">MP4 (H.264, sin transparencia)</option>
+          <option value="png" data-i18n="fmt.png">Secuencia PNG (con transparencia)</option>
+        </select>
+      </label>
+      <label class="check wide"><input type="checkbox" id="expAudio"><span id="expAudioLabel">Incluir el sonido</span></label>
+      <p class="note" id="expInfo"></p>
+      <button id="btnExport" class="btn primary big" type="button" data-i18n="btn.export">Exportar transición</button>
+    </section>
+  </aside>
+</main>
+
+<dialog id="credits" class="dialog">
+  <h2 data-i18n="credits.title">Créditos</h2>
+  <ul class="credit-list">
+    <li><strong>NickDZ</strong><span data-i18n="credits.nick">Creador de esta herramienta</span></li>
+    <li><strong>Funkin' Crew</strong><span data-i18n="credits.funkin">Friday Night Funkin' y su transición de stickers</span></li>
+  </ul>
+  <p id="creditArt" class="note"></p>
+  <p class="note" data-i18n="credits.note">Proyecto de fans, no oficial y sin afiliación con el juego.</p>
+  <form method="dialog" class="row end"><button class="btn primary" type="submit" data-i18n="close">Cerrar</button></form>
+</dialog>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="dialog open">
+    <h2 id="ovTitle"></h2>
+    <div class="bar"><div id="ovBar"></div></div>
+    <p class="note" id="ovText"></p>
+    <div class="row end">
+      <button id="btnReveal" class="btn" type="button" hidden data-i18n="ov.reveal">Mostrar en carpeta</button>
+      <button id="btnOvAction" class="btn primary" type="button"></button>
+    </div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="engine.js"></script>
+<script src="audio.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

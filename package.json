@@ -1,0 +1,19 @@
+{
+  "name": "fnf-sticker-transition-maker",
+  "version": "1.0.0",
+  "description": "Generador de transiciones de stickers de Friday Night Funkin' en video o secuencia PNG",
+  "author": "NickDZ",
+  "license": "MIT",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "node scripts/prepare.js && electron .",
+    "build": "node scripts/build.js"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "ffmpeg-static": "^5.2.0",
+    "rcedit": "^4.0.1"
+  }
+}
